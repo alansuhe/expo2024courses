@@ -6,9 +6,12 @@ import { Text, View } from '@/components/Themed';
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <Text style={styles.title}>Me</Text>
+      <Text>设置主题风格：黑色/白色；查看收藏的墙纸</Text>
+      <Text>收藏的墙纸：只显示数量和略图，点击跳转gallery</Text>
+      <Text>语言选择：简体中文/en</Text>
+      {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <EditScreenInfo path="app/(tabs)/me.tsx" /> */}
     </View>
   );
 }
