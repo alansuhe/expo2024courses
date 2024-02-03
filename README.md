@@ -19,3 +19,5 @@ https://expo.nodejs.cn
 https://chocolatey.org
 
 - Vector Icons图标
+
+https://oblador.github.io/react-native-vector-icons/
