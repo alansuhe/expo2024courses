@@ -1,32 +1,55 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { BlurView } from 'expo-blur';
+import { sizes, useStyle } from '@/style';
+
+const {s, m, l} = sizes
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={l} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+
+  const { colors: { tint, subTint } } = useStyle()
+
+  // const { s, m, l } = sizes
+  // const { tint, subTint } = colors
 
   return (
     <Tabs
-      initialRouteName='me'
-
+      // initialRouteName='me'
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: tint,
+        tabBarInactiveTintColor: subTint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        tabBarStyle: {
+          position: 'absolute',
+          borderTopLeftRadius: m,
+          borderTopRightRadius: m,
+        },
+        tabBarBackground: () => (
+          <BlurView intensity={60}
+            // tint={'light'}
+            experimentalBlurMethod='dimezisBlurView' //Android only
+            style={[StyleSheet.absoluteFill, {
+              borderTopLeftRadius: m,
+              borderTopRightRadius: m,
+              overflow: 'hidden',
+              backgroundColor: 'transparent'
+            }]} />
+        )
       }}>
       <Tabs.Screen
         name="gallery"
@@ -40,20 +63,6 @@ export default function TabLayout() {
         options={{
           title: 'Today',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
         }}
       />
       <Tabs.Screen
