@@ -7,14 +7,15 @@ import { useEffect, useState } from 'react';
 // import Slider from '@react-native-community/slider';
 import { BlurView } from 'expo-blur';
 import { sizes, useStyle } from '@/style';
+import WallpaperModal from '@/components/WallpaperModal';
 
-const { s, m , l} = sizes
+const { s, m, l } = sizes
 
-const { width: screenWidth, height: screenHeight} = Dimensions.get('window')
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
 
 export default function TabOneScreen() {
 
-  const {text} = useStyle()
+  const { text } = useStyle()
 
   // const [wallPaperImage, setWallPaperImage] = useState<string | undefined>()
   const [wallPapers, setWallPapers] = useState([])
@@ -23,6 +24,7 @@ export default function TabOneScreen() {
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
 
   const selectWallPaper: any = wallPapers[selectedIndex]
   const showImageUrl = wallPapers.length > 0 ? `https://bing.com${selectWallPaper.url}` : undefined
@@ -51,7 +53,7 @@ export default function TabOneScreen() {
 
         {
           loading ?
-            <ActivityIndicator />
+            <ActivityIndicator color={'white'} style={{ flex: 1, justifyContent: 'center' }} />
             :
             // 判断是否加载成功
             wallPapers.length > 0 &&
@@ -64,18 +66,20 @@ export default function TabOneScreen() {
                 }]}
               />
 
-              <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                <Image resizeMode='contain' source={{ uri: showImageUrl }} 
-                style={{ alignSelf: 'center', width: screenWidth * 0.9, height: screenWidth * 0.6, margin: s }} />
-                <Text style={[ text.titleText, { color: 'white' }]}>{selectWallPaper.title}</Text>
-                <Text style={[ text.plainText, { color: 'white', padding: 16}]}>{selectWallPaper.copyright}</Text>
-              </View>
+              <Pressable
+                onPress={() => setModalVisible(true)}
+                style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                <Image resizeMode='contain' source={{ uri: showImageUrl }}
+                  style={{ alignSelf: 'center', width: screenWidth * 0.9, height: screenWidth * 0.6, margin: s }} />
+                <Text style={[text.titleText, { color: 'white' }]}>{selectWallPaper.title}</Text>
+                <Text style={[text.plainText, { color: 'white', padding: 16 }]}>{selectWallPaper.copyright}</Text>
+              </Pressable>
               <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', gap: m }}>
                 {
                   wallPapers.map((wp: any, i) =>
                     <Pressable key={i} onPress={() => setSelectedIndex(i)}>
-                      <Image source={{ uri: `https://bing.com${wp.url}` }} 
-                      style={{ height: 64, width: 64, borderRadius: 8, borderColor: 'white', borderWidth: selectedIndex === i ? 4 : 1 }} />
+                      <Image source={{ uri: `https://bing.com${wp.url}` }}
+                        style={{ height: 64, width: 64, borderRadius: 8, borderColor: 'white', borderWidth: selectedIndex === i ? 4 : 1 }} />
                     </Pressable>
                   )
                 }
@@ -83,35 +87,12 @@ export default function TabOneScreen() {
             </ImageBackground>
         }
 
-
-        {/* <Button onPress={handleGetBingWallPaper} title='test BING api' />
-                <Text>{`idx: ${idx}`}</Text> */}
-
-        {/* <Slider
-                  style={{ width: '80%' }}
-                  step={1}
-                  disabled={loading}
-                  onValueChange={value => changeIdx(value)} minimumValue={0} maximumValue={7} value={idx} />
-              </View> */}
-
       </>
+
+      {
+        wallPapers.length > 0 &&
+        <WallpaperModal wallpaper={wallPapers[selectedIndex]} visible={modalVisible} onClose={() => setModalVisible(false)} />
+      }
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

@@ -20,7 +20,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
 
-  const { colors: { tint, subTint } } = useStyle()
+  const { colors: { tint, subTint, emphsis } } = useStyle()
 
   // const { s, m, l } = sizes
   // const { tint, subTint } = colors
@@ -29,7 +29,7 @@ export default function TabLayout() {
     <Tabs
       // initialRouteName='me'
       screenOptions={{
-        tabBarActiveTintColor: tint,
+        tabBarActiveTintColor: emphsis,
         tabBarInactiveTintColor: subTint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.

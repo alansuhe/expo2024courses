@@ -1,4 +1,8 @@
-import { ActivityIndicator, Button, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Button, Image, ImageBackground, Modal,
+  Pressable, StyleSheet, Text, View
+} from 'react-native';
 
 // import { Text, View } from '@/components/Themed';
 
@@ -6,16 +10,20 @@ import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from 'react';
 import { getBingWallPapers } from '@/api';
 import { Tabs } from 'expo-router';
-import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { sizes, useStyle } from '@/style';
-const {l, s, m} = sizes
+const { l, s, m } = sizes
+
+import WallpaperModal from '@/components/WallpaperModal';
 
 export default function TabTwoScreen() {
 
-  const {colors, text, layout} = useStyle()
+  const { colors, text, layout } = useStyle()
 
   const [wallpapers, setWallpapers] = useState([])
+  const [selectedWallpaperIndex, setSelectedWallpaperIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
 
   async function handleGetWallpapers(n: number) {
     setLoading(true)
@@ -23,6 +31,11 @@ export default function TabTwoScreen() {
     setLoading(false)
     // console.log(ws)
     setWallpapers(ws);
+  }
+
+  function handleTapItem(wallpaperIndex: number) {
+    setSelectedWallpaperIndex(wallpaperIndex)
+    setModalVisible(true)
   }
 
   useEffect(() => {
@@ -61,15 +74,20 @@ export default function TabTwoScreen() {
             estimatedItemSize={5}
             data={wallpapers}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item }: { item: any }) => {
+            renderItem={({ item, index }: { item: Object, index: number }) => {
               // console.log(item)
               return (
-                <View style={{ flexDirection: 'row', 
-                flex: 1, 
-                margin: s, 
-                // gap: 8, 
-                backgroundColor: colors.mid,
-                borderRadius: m, overflow: 'hidden' }}>
+                <Pressable
+                  onPress={() => handleTapItem(index)}
+                  style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                    margin: s,
+                    // gap: 8, 
+                    backgroundColor: colors.mid,
+                    borderRadius: m,
+                    overflow: 'hidden'
+                  }}>
                   <Image source={{ uri: `https://bing.com${item.url}` }}
                     style={{ height: 100, width: 100 }} />
                   <View style={{ flex: 1, padding: s }}>
@@ -80,12 +98,18 @@ export default function TabTwoScreen() {
                       {item.copyright}
                     </Text>
                   </View>
-                </View>
+                </Pressable>
               )
             }} />
         </View>
 
       </View>
+
+      {
+        wallpapers.length > 0 &&
+        <WallpaperModal wallpaper={wallpapers[selectedWallpaperIndex]} visible={modalVisible} onClose={() => setModalVisible(false)} />
+      }
+
     </>
 
   );

@@ -20,10 +20,11 @@ export function useStyle() {
             isDark ? {
                 primary: 'ghostwhite',
                 sub: 'gainsboro',
-                mid: 'darkgrey',
+                mid: '#444444',
                 tint: 'cornsilk',
                 subTint: 'gainsboro',
-                bg: 'dimgrey',
+                bg: '#333333',
+                emphsis: '#ffa07a'
             } : {
                 primary: 'dimgrey',
                 sub: 'darkgrey',
@@ -31,6 +32,7 @@ export function useStyle() {
                 tint: 'grey',
                 subTint: 'gainsboro',
                 bg: 'whitesmoke',
+                emphsis: '#ffa07a'
             }
         )
     };
