@@ -6,9 +6,9 @@
 
 https://space.bilibili.com/385534
 
-- site
+- gitHub
 
-https://blog.suhe.space
+https://github.com/alansuhe/expo2024courses
 
 - blog
 
