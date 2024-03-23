@@ -1,6 +1,6 @@
 import { ActivityIndicator, Button, Image, ImageBackground, StyleSheet, View, Text, Pressable, useWindowDimensions, Dimensions } from 'react-native';
 
-import { Link, Tabs } from 'expo-router';
+import { Link, Tabs, useRouter } from 'expo-router';
 
 import { getBingWallPapers } from '@/api';
 import { useEffect, useState } from 'react';
@@ -15,12 +15,12 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
 
 export default function TabOneScreen() {
 
+  const router = useRouter()
+
   const { text } = useStyle()
 
   // const [wallPaperImage, setWallPaperImage] = useState<string | undefined>()
   const [wallPapers, setWallPapers] = useState([])
-
-  console.log('wallpapers', wallPapers)
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -39,6 +39,12 @@ export default function TabOneScreen() {
   useEffect(() => {
     handleGetBingWallPaper()
   }, [])
+
+  const handleTapItem = () => {
+    setSelectedIndex(selectedIndex)
+    // setModalVisible(true)
+    router.push({ pathname: '/wallPaper', params: { initialIndex: selectedIndex, number: 3 }})
+  }
 
   return (
     <>
@@ -67,7 +73,7 @@ export default function TabOneScreen() {
               />
 
               <Pressable
-                onPress={() => setModalVisible(true)}
+                onPress={handleTapItem}
                 style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
                 <Image resizeMode='contain' source={{ uri: showImageUrl }}
                   style={{ alignSelf: 'center', width: screenWidth * 0.9, height: screenWidth * 0.6, margin: s }} />
@@ -89,10 +95,10 @@ export default function TabOneScreen() {
 
       </>
 
-      {
+      {/* {
         wallPapers.length > 0 &&
         <WallpaperModal wallpaper={wallPapers[selectedIndex]} visible={modalVisible} onClose={() => setModalVisible(false)} />
-      }
+      } */}
     </>
   );
 }

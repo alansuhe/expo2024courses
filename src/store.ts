@@ -21,3 +21,25 @@ export const useSettings = create<SettingsState>()(
             storage: createJSONStorage(() => AsyncStorage)
         }
     ))
+
+
+type WallpaperType = {
+    url: string,
+    title: string,
+    copyright: string
+}
+
+interface IWallpapersState {
+    wallpapers: WallpaperType[],
+    updateWallpapers: (newWallpapers: WallpaperType[]) => void
+}
+export const useWallpapers = create<IWallpapersState>()(
+    persist(set => ({
+        wallpapers: [],
+        updateWallpapers: (newWallpapers) => set((state) => ({...state, wallpapers: newWallpapers}))
+    }),
+        {
+            name: 'MYPAPER_WALLPAPERS',
+            storage: createJSONStorage(() => AsyncStorage)
+        }
+    ))
