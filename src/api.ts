@@ -14,5 +14,5 @@ export async function getBingWallPapers({ idx = 0, n = 1 }: ApiParamsType) {
     return await fetch(apiUrl)
         .then(res => res.json())
         .then(json => { return (json.images) })
-        .catch(e => console.log(e))
+        .catch(e => console.log('fetching...error', e))
 }

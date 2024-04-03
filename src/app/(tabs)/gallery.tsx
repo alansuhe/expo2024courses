@@ -1,7 +1,7 @@
 import {
   ActivityIndicator,
-  FlatList,
-  Image,
+  // FlatList,
+  // Image,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -20,8 +20,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { sizes, useStyle } from '@/style';
 const { l, s, m } = sizes
 
-import WallpaperModal from '@/components/WallpaperModal';
+// import WallpaperModal from '@/components/WallpaperModal';
 import { useWallpapers } from '@/store';
+import { Image } from 'expo-image';
 // import { useSettings } from '@/store';
 
 export default function TabTwoScreen() {
@@ -32,10 +33,10 @@ export default function TabTwoScreen() {
   const { colors, text, layout } = useStyle()
   const { width: screenWidth } = useWindowDimensions()
 
-  const {wallpapers, updateWallpapers} = useWallpapers()
+  const { wallpapers, updateWallpapers } = useWallpapers()
 
   // const [wallpapers, setWallpapers] = useState([])
-  const [selectedWallpaperIndex, setSelectedWallpaperIndex] = useState(0)
+  // const [selectedWallpaperIndex, setSelectedWallpaperIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   // const [modalVisible, setModalVisible] = useState(false)
   const [galleryLayout, setGalleryLayout] = useState('list')
@@ -59,23 +60,22 @@ export default function TabTwoScreen() {
     }
     setLoading(false)
     // console.log(ws)
-
-
   }
 
   function handleTapItem(wallpaperIndex: number) {
-    setSelectedWallpaperIndex(wallpaperIndex)
+    // setSelectedWallpaperIndex(wallpaperIndex)
     // setModalVisible(true)
-    router.push({ pathname: '/wallPaper', params: { initialIndex: wallpaperIndex }})
+    router.push({ pathname: '/wallPaper', params: { initialIndex: wallpaperIndex } })
   }
 
   const toggleGalleryLayout = () => {
     setGalleryLayout(prev => prev === 'list' ? 'grid' : 'list')
   }
 
-  useEffect(() => {
-    handleGetWallpapers(0, 8)
-  }, [])
+  // useEffect(() => {
+  //   console.log('[gallery] - useEffect')
+  //   handleGetWallpapers(0, 8)
+  // }, [])
 
   return (
     <>
@@ -120,7 +120,7 @@ export default function TabTwoScreen() {
                 onEndReachedThreshold={0.1}
                 ListFooterComponentStyle={{ height: 96 }}
                 ListFooterComponent={
-                   <Text style={text.subText}>{wallpapers.length > 8 ? '你已经走到底了' : '...'}</Text>
+                  <Text style={text.subText}>{wallpapers.length > 8 ? '你已经走到底了' : '...'}</Text>
                 }
                 refreshControl={
                   <RefreshControl tintColor={colors.sub}
@@ -143,7 +143,10 @@ export default function TabTwoScreen() {
                         borderRadius: m,
                         overflow: 'hidden'
                       }}>
-                      <Image source={{ uri: `https://bing.com${item.url}` }}
+                      <Image
+                        placeholder={require('@assets/images/icon.png')}
+                        placeholderContentFit='contain'
+                        source={{ uri: `https://bing.com${item.url}` }}
                         style={{ height: 100, width: 100 }} />
                       <View style={{ flex: 1, padding: s }}>
                         <Text numberOfLines={3} style={text.titleText} >
@@ -163,7 +166,10 @@ export default function TabTwoScreen() {
                     <Pressable
                       key={index}
                       onPress={() => handleTapItem(index)}>
-                      <Image source={{ uri: `https://bing.com${img.url}` }}
+                      <Image
+                        placeholder={require('@assets/images/icon.png')}
+                        placeholderContentFit='contain'
+                        source={{ uri: `https://bing.com${img.url}` }}
                         style={{ height: 100, width: (screenWidth - s * 2) / 3 }} />
                     </Pressable>
                   )

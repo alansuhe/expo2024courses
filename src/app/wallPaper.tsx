@@ -7,22 +7,26 @@ import AwesomeGallery, {
 } from 'react-native-awesome-gallery';
 
 import { Image } from 'expo-image';
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { sizes, useStyle } from "@/style";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWallpapers } from "@/store";
 
+import * as Sharing from 'expo-sharing';
+
 const renderItem = ({
   item,
   setImageDimensions
-}: RenderItemInfo<{url: string}>) => {
+}: RenderItemInfo<{ url: string }>) => {
   // console.log('item', item)
   return (
     <Image
       source={{ uri: `https://bing.com${item.url}` }}
       style={StyleSheet.absoluteFillObject}
       contentFit="cover"
+      placeholder={require('@assets/images/icon.png')}
+      placeholderContentFit='cover'
       onLoad={(e) => {
         const { width, height } = e.source;
         setImageDimensions({ width, height })
@@ -35,7 +39,7 @@ export default function WallPaper() {
 
   const router = useRouter()
 
-  const { text } = useStyle()
+  const { text, colors } = useStyle()
 
   const { top, bottom } = useSafeAreaInsets();
 
@@ -45,7 +49,7 @@ export default function WallPaper() {
 
   const { wallpapers } = useWallpapers()
 
-  console.log(initialIndex)
+  // console.log(initialIndex)
 
   const galleryRef = useRef<GalleryRef>(null)
 
@@ -59,6 +63,12 @@ export default function WallPaper() {
 
   const onIndexChange = (index: number) => {
     setShowIndex(index)
+  }
+
+  const onSharing = () => {
+    Sharing.shareAsync(`https://bing.com${wallpapers[initialIndex].url}`, {
+      dialogTitle: 'Share this wallpaper?'
+    })
   }
 
   return (
@@ -108,8 +118,11 @@ export default function WallPaper() {
           paddingBottom: bottom,
           paddingTop: sizes.s, justifyContent: 'center', alignItems: 'center'
         }}>
-          <Text style={text.titleText}>Tools</Text>
-          <Text style={text.plainText}>buttons</Text>
+          <Pressable style={{ padding: sizes.s, borderRadius: sizes.s, backgroundColor: colors.mid }}
+            onPress={onSharing}>
+            <Text style={text.plainText}>分享</Text>
+          </Pressable>
+
         </View>
       }
     </GestureHandlerRootView>

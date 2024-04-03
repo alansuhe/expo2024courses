@@ -3,11 +3,12 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
-import { useSettings } from '@/store';
+import { useSettings, useWallpapers } from '@/store';
 import { useStyle } from '@/style';
+import { getBingWallPapers } from '@/api';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -23,8 +24,11 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+  const { updateWallpapers } = useWallpapers()
+
   const [loaded, error] = useFonts({
-    SpaceMono: require('@assets/fonts/SpaceMono-Regular.ttf'),
+    // SpaceMono: require('@assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
@@ -33,11 +37,22 @@ export default function RootLayout() {
     if (error) throw error;
   }, [error]);
 
+  const [isWallpaperLoaded, setIsWallpaperLoaded] = useState(false)
+
   useEffect(() => {
-    if (loaded) {
+    const loadWallpapers = async () => {
+      const ws = await getBingWallPapers({ idx: 0, n: 7 })
+      updateWallpapers(ws);
+      setIsWallpaperLoaded(true)
+    }
+    loadWallpapers()
+  }, [])
+
+  useEffect(() => {
+    if (loaded && isWallpaperLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, isWallpaperLoaded]);
 
   if (!loaded) {
     return null;
@@ -73,7 +88,7 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="wallPaper" options={{ headerShown: false}} />
+        <Stack.Screen name="wallPaper" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );

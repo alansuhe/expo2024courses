@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { BlurView } from 'expo-blur';
 import { sizes, useStyle } from '@/style';
 import WallpaperModal from '@/components/WallpaperModal';
+import { useWallpapers } from '@/store';
 
 const { s, m, l } = sizes
 
@@ -20,30 +21,34 @@ export default function TabOneScreen() {
   const { text } = useStyle()
 
   // const [wallPaperImage, setWallPaperImage] = useState<string | undefined>()
-  const [wallPapers, setWallPapers] = useState([])
+  // const [wallPapers, setWallPapers] = useState([])
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
 
-  const selectWallPaper: any = wallPapers[selectedIndex]
-  const showImageUrl = wallPapers.length > 0 ? `https://bing.com${selectWallPaper.url}` : undefined
+  // const handleGetBingWallPaper = async () => {
+  //   setLoading(true)
+  //   const arr = await getBingWallPapers({ n: 3 })
+  //   setLoading(false)
+  //   setWallPapers(arr)
+  // }
 
-  const handleGetBingWallPaper = async () => {
-    setLoading(true)
-    const arr = await getBingWallPapers({ n: 3 })
-    setLoading(false)
-    setWallPapers(arr)
-  }
+  // useEffect(() => {
+  //   console.log('[index] - useEffect')
+  //   handleGetBingWallPaper()
+  // }, [])
 
-  useEffect(() => {
-    handleGetBingWallPaper()
-  }, [])
+  const { wallpapers: _wallpapers } = useWallpapers()
+  const wallpapers = _wallpapers && _wallpapers.length > 0 ? _wallpapers.slice(0, 3) : []
+
+  const selectWallPaper: any = wallpapers[selectedIndex]
+  const showImageUrl = wallpapers.length > 0 ? `https://bing.com${selectWallPaper.url}` : undefined
 
   const handleTapItem = () => {
     setSelectedIndex(selectedIndex)
     // setModalVisible(true)
-    router.push({ pathname: '/wallPaper', params: { initialIndex: selectedIndex, number: 3 }})
+    router.push({ pathname: '/wallPaper', params: { initialIndex: selectedIndex, number: 3 } })
   }
 
   return (
@@ -62,7 +67,7 @@ export default function TabOneScreen() {
             <ActivityIndicator color={'white'} style={{ flex: 1, justifyContent: 'center' }} />
             :
             // 判断是否加载成功
-            wallPapers.length > 0 &&
+            wallpapers.length > 0 &&
             <ImageBackground source={{ uri: showImageUrl }} style={{ flex: 1 }}>
               <BlurView
                 experimentalBlurMethod='dimezisBlurView'
@@ -82,7 +87,7 @@ export default function TabOneScreen() {
               </Pressable>
               <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', gap: m }}>
                 {
-                  wallPapers.map((wp: any, i) =>
+                  wallpapers.map((wp: any, i) =>
                     <Pressable key={i} onPress={() => setSelectedIndex(i)}>
                       <Image source={{ uri: `https://bing.com${wp.url}` }}
                         style={{ height: 64, width: 64, borderRadius: 8, borderColor: 'white', borderWidth: selectedIndex === i ? 4 : 1 }} />
