@@ -2,13 +2,12 @@ import { ActivityIndicator, Button, Image, ImageBackground, StyleSheet, View, Te
 
 import { Link, Tabs, useRouter } from 'expo-router';
 
-import { getBingWallPapers } from '@/api';
 import { useEffect, useState } from 'react';
 // import Slider from '@react-native-community/slider';
 import { BlurView } from 'expo-blur';
 import { sizes, useStyle } from '@/style';
-import WallpaperModal from '@/components/WallpaperModal';
 import { useWallpapers } from '@/store';
+import useMyAdInterstitial, { InterstitialStatusType } from '@/components/MyAdInterstitialHook';
 
 const { s, m, l } = sizes
 
@@ -45,10 +44,18 @@ export default function TabOneScreen() {
   const selectWallPaper: any = wallpapers[selectedIndex]
   const showImageUrl = wallpapers.length > 0 ? `https://bing.com${selectWallPaper.url}` : undefined
 
+  const { loadAd, restoreStatus, adStatus } = useMyAdInterstitial()
+
   const handleTapItem = () => {
-    setSelectedIndex(selectedIndex)
-    // setModalVisible(true)
-    router.push({ pathname: '/wallPaper', params: { initialIndex: selectedIndex, number: 3 } })
+    // 插入广告
+    if (adStatus === 'CLOSED') {
+      restoreStatus()
+      setSelectedIndex(selectedIndex)
+      // setModalVisible(true)
+      router.push({ pathname: '/wallPaper', params: { initialIndex: selectedIndex, number: 3 } })
+    } else {
+      loadAd()
+    }
   }
 
   return (

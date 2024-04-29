@@ -23,6 +23,7 @@ const { l, s, m } = sizes
 // import WallpaperModal from '@/components/WallpaperModal';
 import { useWallpapers } from '@/store';
 import { Image } from 'expo-image';
+import MyBannerAd from '@/components/MyBannerAd';
 // import { useSettings } from '@/store';
 
 export default function TabTwoScreen() {
@@ -102,6 +103,7 @@ export default function TabTwoScreen() {
       />
 
       <View style={layout.container}>
+        <MyBannerAd />
 
         <View style={{ flex: 1, height: '100%', width: '100%', padding: s }}>
 
